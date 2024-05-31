@@ -1,0 +1,15 @@
+body {
+  margin: 0;
+}
+
+#root {
+  display: grid;
+  grid-template-columns: 150px 1fr 240px;
+  grid-template-rows: 50px 1fr;
+  height: 100vh;
+}
+
+.itemlist {
+  grid-column: 2/3;
+  grid-row: 2/3;
+}
