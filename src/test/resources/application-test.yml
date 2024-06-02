@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${RECALL_DB_URL}
-    username: ${RECALL_DB_USERNAME}
-    password: ${RECALL_DB_PASSWORD}
+    url: ${RECALL_TEST_DB_URL}
+    username: ${RECALL_TEST_DB_USERNAME}
+    password: ${RECALL_TEST_DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -12,7 +12,7 @@ spring:
       connection-timeout: 30000
   jpa:
     hibernate:
-      ddl-auto: none  # options: create, create-drop, validate, update, none
+      ddl-auto: create-drop  # options: create, create-drop, validate, update, none
     show-sql: true      # enable to show SQL statements in the console
     properties:
       hibernate:
