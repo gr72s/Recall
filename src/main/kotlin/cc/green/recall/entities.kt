@@ -30,23 +30,6 @@ abstract class AbstractEntity : Serializable {
     }
 }
 
-@Table(name = "pay_method")
-@Entity
-class PayMethod : AbstractEntity() {
-    @get:Column(name = "pay_identifier")
-    var identifier: String? = null
-
-    @get:Column(name = "pay_label")
-    var label: String? = null
-
-    @get:OneToMany(
-        mappedBy = "payMethod",
-        cascade = [(CascadeType.PERSIST)],
-        orphanRemoval = false
-    )
-    var records = mutableListOf<ConsumeRecord>()
-}
-
 @Entity
 @Table(name = "pay_account")
 class PayAccount : AbstractEntity() {
@@ -140,13 +123,6 @@ class ConsumeRecord : AbstractEntity() {
 
     @get:ManyToOne
     @get:JoinColumn(
-        name = "pay_method",
-        foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
-    )
-    var payMethod: PayMethod? = null
-
-    @get:ManyToOne
-    @get:JoinColumn(
         name = "pay_account",
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
@@ -155,7 +131,7 @@ class ConsumeRecord : AbstractEntity() {
     @get:Column(name = "cs_date")
     var consumeDate: LocalDate? = null
 
-    @ManyToOne
+    @get:ManyToOne
     @get:JoinColumn(
         name = "cs_platform",
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)

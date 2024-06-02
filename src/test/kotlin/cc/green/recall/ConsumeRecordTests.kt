@@ -26,9 +26,6 @@ class ConsumeRecordTests : RecallApplicationTests() {
     lateinit var payAccountService: PayAccountService
 
     @Autowired
-    lateinit var payMethodService: PayMethodService
-
-    @Autowired
     lateinit var payPlatformService: PayPlatformService
 
     @Autowired
@@ -37,7 +34,7 @@ class ConsumeRecordTests : RecallApplicationTests() {
     @Test
     fun testControllerProtoDateParamInValid() {
 
-        val noDateProto = ConsumeRecordProto(null, 1, 1, 1.toBigDecimal(), 1, null, 1, listOf())
+        val noDateProto = ConsumeRecordProto(null, 1, 1.toBigDecimal(), 1, null, 1, listOf())
 
         val responseEntity = restTemplate.postForEntity(
             "/consume/record/add", noDateProto, Response::class.java
@@ -51,7 +48,7 @@ class ConsumeRecordTests : RecallApplicationTests() {
     @Test
     fun testControllerNotFoundOtherEntity() {
         val absentEntityIdProto =
-            ConsumeRecordProto(null, 1, null, 1.toBigDecimal(), null, LocalDate.now(), null, listOf())
+            ConsumeRecordProto(null, 1, 1.toBigDecimal(), null, LocalDate.now(), null, listOf())
 
         val responseEntity = restTemplate.postForEntity(
             "/consume/record/add", absentEntityIdProto, Response::class.java
@@ -64,7 +61,7 @@ class ConsumeRecordTests : RecallApplicationTests() {
 
     @Test
     fun testServiceNotFoundOtherEntity() {
-        val recordProto = ConsumeRecordProto(1, 1, 1, 1.toBigDecimal(), 1, LocalDate.now(), 1, listOf())
+        val recordProto = ConsumeRecordProto(1, 1, 1.toBigDecimal(), 1, LocalDate.now(), 1, listOf())
 
         assertThrows<NotFoundEntityException>(NotFoundEntityException(1.toString(), "platform").message!!) {
             consumeRecordService.newConsumeRecord(recordProto)
@@ -79,14 +76,12 @@ class ConsumeRecordTests : RecallApplicationTests() {
             consumePlatformService.newConsumePlatform(ConsumePlatformProto(null, "platform1", null))
         val newConsumeTag = consumeTagService.newConsumeTag(ConsumeTagProto(null, "tag1", null, null))
         val newPayAccount = payAccountService.newPayAccount(PayAccountProto(null, "account1", null, null, false))
-        val newPayMethod = payMethodService.newPayMethod(PayMethodProto(null, "paymethod1", null))
         val newPayPlatform = payPlatformService.newPayPlatform(PayPlatformProto(null, "payplatform1", null))
 
         val newConsumeRecord = consumeRecordService.newConsumeRecord(
             ConsumeRecordProto(
                 null,
                 newPayPlatform.id,
-                newPayMethod.id,
                 10.toBigDecimal(),
                 newPayAccount.id,
                 LocalDate.now(),
@@ -100,7 +95,6 @@ class ConsumeRecordTests : RecallApplicationTests() {
         assertEquals(1, newConsumeRecord.tags.size)
         assertEquals(newConsumeTag.id, newConsumeRecord.tags.stream().findFirst().get().id)
         assertEquals(newPayAccount.id, newConsumeRecord.payAccount!!.id)
-        assertEquals(newPayMethod.id, newConsumeRecord.payMethod!!.id)
         assertEquals(newPayPlatform.id, newConsumeRecord.payPlatform!!.id)
     }
 

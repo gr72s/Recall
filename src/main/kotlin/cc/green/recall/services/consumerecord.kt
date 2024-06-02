@@ -16,7 +16,6 @@ import java.time.LocalDate
 data class ConsumeRecordProto(
     val id: Long?,
     val payPlatformId: Long?,
-    val payMethodId: Long?,
     val sum: BigDecimal = 0.toBigDecimal(),
     val payAccountId: Long?,
     val consumeDate: LocalDate?,
@@ -56,7 +55,6 @@ class ConsumeRecordController(val service: ConsumeRecordService) {
 class ConsumeRecordService(
     val repo: ConsumeRecordRepo,
     val payPlatformRepo: PayPlatformRepo,
-    val payMethodRepo: PayMethodRepo,
     val payAccountRepo: PayAccountRepo,
     val tagRepo: ConsumeTagRepo,
     val consumePlatformRepo: ConsumePlatformRepo,
@@ -87,13 +85,10 @@ class ConsumeRecordService(
             payPlatform = proto.payPlatformId?.let {
                 payPlatformRepo.findByIdOrThrow(it)
             }
-            payMethod = proto.payMethodId?.let {
-                payMethodRepo.findByIdOrThrow(it)
-            }
-            sum = proto.sum
             payAccount = proto.payAccountId?.let {
                 payAccountRepo.findByIdOrThrow(it)
             }
+            sum = proto.sum
             consumeDate = proto.consumeDate
             consumePlatform = proto.consumePlatformId?.let {
                 consumePlatformRepo.findByIdOrNull(it)
