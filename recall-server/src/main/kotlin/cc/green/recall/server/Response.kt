@@ -1,4 +1,4 @@
-package cc.green.recall
+package cc.green.recall.server
 
 import java.io.Serializable
 

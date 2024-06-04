@@ -1,6 +1,6 @@
-package cc.green.recall
+package cc.green.recall.server
 
-import cc.green.recall.services.*
+import cc.green.recall.server.services.*
 import jakarta.transaction.Transactional
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull

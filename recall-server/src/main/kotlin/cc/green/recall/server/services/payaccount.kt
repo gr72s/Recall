@@ -1,6 +1,7 @@
-package cc.green.recall.services
+package cc.green.recall.server.services
 
 import cc.green.recall.*
+import cc.green.recall.server.*
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Repository

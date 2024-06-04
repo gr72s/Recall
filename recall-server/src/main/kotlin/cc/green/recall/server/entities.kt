@@ -1,4 +1,4 @@
-package cc.green.recall
+package cc.green.recall.server
 
 import jakarta.persistence.*
 import java.io.Serializable

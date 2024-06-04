@@ -1,6 +1,6 @@
-package cc.green.recall
+package cc.green.recall.server
 
-import cc.green.recall.services.getEntityTableName
+import cc.green.recall.server.services.getEntityTableName
 import kotlin.reflect.KClass
 
 abstract class ServiceException(val statusCode: Int, val reason: String, message: String) : RuntimeException(message)

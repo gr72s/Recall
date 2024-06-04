@@ -1,7 +1,7 @@
-package cc.green.recall.services
+package cc.green.recall.server.services
 
-import cc.green.recall.NotFoundEntityException
-import cc.green.recall.Response
+import cc.green.recall.server.NotFoundEntityException
+import cc.green.recall.server.Response
 import jakarta.persistence.Table
 import org.springframework.data.repository.CrudRepository
 import org.springframework.http.ResponseEntity

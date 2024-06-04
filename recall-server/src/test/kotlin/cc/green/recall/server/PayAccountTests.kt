@@ -1,9 +1,9 @@
-package cc.green.recall
+package cc.green.recall.server
 
-import cc.green.recall.services.PayAccountProto
-import cc.green.recall.services.PayAccountRepo
-import cc.green.recall.services.PayAccountService
-import cc.green.recall.services.getEntityTableName
+import cc.green.recall.server.services.PayAccountProto
+import cc.green.recall.server.services.PayAccountRepo
+import cc.green.recall.server.services.PayAccountService
+import cc.green.recall.server.services.getEntityTableName
 import jakarta.transaction.Transactional
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach

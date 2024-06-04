@@ -1,4 +1,4 @@
-package cc.green.recall
+package cc.green.recall.server
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler

@@ -1,4 +1,4 @@
-package cc.green.recall
+package cc.green.recall.server
 
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles

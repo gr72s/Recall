@@ -1,4 +1,4 @@
-package cc.green.recall
+package cc.green.recall.server
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
