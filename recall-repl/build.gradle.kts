@@ -8,11 +8,15 @@ dependencyManagement {
 
 dependencies {
     implementation("org.springframework.shell:spring-shell-starter")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    implementation(project(":recall-server")) {
+        exclude("org.springframework.boot", "spring-boot-starter-data-jpa")
+        exclude("org.springframework.boot", "spring-boot-starter-web")
+        exclude("org.postgresql", "postgresql")
+    }
 }
