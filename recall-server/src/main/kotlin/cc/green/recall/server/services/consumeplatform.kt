@@ -66,8 +66,10 @@ class ConsumePlatformService(val repo: ConsumePlatformRepo) {
         return filtered
     }
 
-    fun getConsumePlatform(): List<ConsumePlatform> {
-        return repo.findAll()
+    fun getConsumePlatform(): List<ConsumePlatformProto> {
+        return repo.findAll().map {
+            ConsumePlatformProto(it.id, it.identifier, it.label)
+        }
     }
 
     @Throws(ServiceException::class)

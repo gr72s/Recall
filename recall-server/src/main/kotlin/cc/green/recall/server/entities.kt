@@ -49,7 +49,8 @@ class PayAccount : AbstractEntity() {
     @get:OneToMany(
         mappedBy = "payAccount",
         cascade = [(CascadeType.PERSIST)],
-        orphanRemoval = false
+        orphanRemoval = false,
+        fetch = FetchType.LAZY
     )
     var records = mutableListOf<ConsumeRecord>()
 }
@@ -66,7 +67,8 @@ class PayPlatform : AbstractEntity() {
     @get:OneToMany(
         mappedBy = "payPlatform",
         cascade = [CascadeType.PERSIST],
-        orphanRemoval = false
+        orphanRemoval = false,
+        fetch = FetchType.LAZY
     )
     var records = mutableSetOf<ConsumeRecord>()
 }
@@ -80,14 +82,11 @@ class ConsumeTag : AbstractEntity() {
     @get:Column(name = "tg_label")
     var label: String? = null
 
-    @get:ManyToOne
-    @get:JoinColumn(
-        name = "tg_superior_tag",
-        foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
-    )
-    var superior: ConsumeTag? = null
+    @get:Column(name = "tg_superior_tag")
+    var superior: Long? = null
 
-    @get:ManyToMany(mappedBy = "tags")
+    @get:Transient
+    @get:ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     var records = mutableSetOf<ConsumeRecord>()
 }
 
@@ -103,7 +102,8 @@ class ConsumePlatform : AbstractEntity() {
     @get:OneToMany(
         mappedBy = "consumePlatform",
         cascade = [CascadeType.PERSIST],
-        orphanRemoval = false
+        orphanRemoval = false,
+        fetch = FetchType.LAZY
     )
     var records = mutableSetOf<ConsumeRecord>()
 }
@@ -111,7 +111,7 @@ class ConsumePlatform : AbstractEntity() {
 @Entity
 @Table(name = "cs_record")
 class ConsumeRecord : AbstractEntity() {
-    @get:ManyToOne
+    @get:ManyToOne(fetch = FetchType.LAZY)
     @get:JoinColumn(
         name = "pay_platform",
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
@@ -121,7 +121,7 @@ class ConsumeRecord : AbstractEntity() {
     @get:Column(name = "cs_sum")
     var sum: BigDecimal = 0.toBigDecimal()
 
-    @get:ManyToOne
+    @get:ManyToOne(fetch = FetchType.LAZY)
     @get:JoinColumn(
         name = "pay_account",
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
@@ -131,14 +131,14 @@ class ConsumeRecord : AbstractEntity() {
     @get:Column(name = "cs_date")
     var consumeDate: LocalDate? = null
 
-    @get:ManyToOne
+    @get:ManyToOne(fetch = FetchType.LAZY)
     @get:JoinColumn(
         name = "cs_platform",
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
     var consumePlatform: ConsumePlatform? = null
 
-    @get:ManyToMany
+    @get:ManyToMany(fetch = FetchType.LAZY)
     @get:JoinTable(
         name = "cs_record_tags",
         joinColumns = [(JoinColumn(name = "record_id"))],

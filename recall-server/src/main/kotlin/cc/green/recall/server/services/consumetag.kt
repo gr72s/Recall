@@ -15,7 +15,8 @@ data class ConsumeTagProto(
     val id: Long?,
     val identifier: String?,
     val label: String?,
-    val superior: Long?
+    val superior: Long?,
+    val superiorIdentifier: String? = null
 )
 
 @RestController
@@ -67,8 +68,12 @@ class ConsumeTagService(val repo: ConsumeTagRepo) {
         return filtered
     }
 
-    fun getConsumeTag(): List<ConsumeTag> {
-        return repo.findAll()
+    fun getConsumeTag(): List<ConsumeTagProto> {
+        val tags = repo.findAll()
+        val associateBy = tags.associateBy { it.id }
+        return tags.map {
+            ConsumeTagProto(it.id, it.identifier, it.label, it.superior, associateBy[it.superior]?.identifier)
+        }.toList()
     }
 
     @Throws(ServiceException::class)
@@ -76,7 +81,7 @@ class ConsumeTagService(val repo: ConsumeTagRepo) {
         val obj = (tag ?: ConsumeTag()).apply {
             identifier = proto.identifier
             label = proto.label ?: proto.identifier
-            superior = proto.superior?.let { repo.findById(it).orElse(null) }
+            superior = proto.superior
         }
         return repo.save(obj)
     }
