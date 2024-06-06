@@ -148,5 +148,5 @@ class ConsumeRecord : AbstractEntity() {
         inverseJoinColumns = [(JoinColumn(name = "tag_id"))],
         foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
-    var tags :MutableSet<ConsumeTag> = mutableSetOf()
+    var tags: MutableSet<ConsumeTag> = mutableSetOf()
 }

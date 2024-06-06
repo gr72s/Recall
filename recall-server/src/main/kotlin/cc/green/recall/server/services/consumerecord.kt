@@ -27,6 +27,16 @@ data class ConsumeRecordProto(
     val tagIds: List<Long> = listOf()
 )
 
+data class ConsumeRecordResProto(
+    val id: Long?,
+    val payPlatformIdentifier: String?,
+    val sum: BigDecimal = 0.toBigDecimal(),
+    val payAccountIdentifier: String?,
+    val consumeDate: LocalDate?,
+    val consumePlatformIdentifier: String?,
+    val tags: List<String> = listOf()
+)
+
 @RestController
 class ConsumeRecordController(val service: ConsumeRecordService) {
 
@@ -34,6 +44,22 @@ class ConsumeRecordController(val service: ConsumeRecordService) {
     fun addConsumeRecord(@RequestBody proto: ConsumeRecordProto): ResponseEntity<Response> {
         proto.consumeDate ?: throw HasNullProtoException("consume date")
         return success(service.newConsumeRecord(proto))
+    }
+
+    @PostMapping("/repl/consume/record/add")
+    fun addConsumeRecordForRepl(@RequestBody proto: ConsumeRecordProto): ResponseEntity<Response> {
+        proto.consumeDate ?: throw HasNullProtoException("consume date")
+        val entity = service.newConsumeRecord(proto)
+        val resProto = ConsumeRecordResProto(
+            entity.id,
+            entity.consumePlatform?.identifier,
+            entity.sum,
+            entity.payAccount?.identifier,
+            entity.consumeDate,
+            entity.consumePlatform?.identifier,
+            entity.tags.mapNotNull { it.identifier }.toList()
+        )
+        return success(resProto)
     }
 
     @PostMapping("/consume/record/update")
