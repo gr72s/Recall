@@ -2,6 +2,7 @@ package cc.green.recall.repl.service
 
 import cc.green.recall.server.Response
 import cc.green.recall.server.services.ConsumeRecordProto
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -22,7 +23,7 @@ class Record {
         payPlatform: String,
         payAccount: String,
         @ShellOption consumeDate: String = LocalDate.now().toString()
-    ): String {
+    ): String? {
 
 
         println("pre sum: ${sum}")
@@ -45,19 +46,27 @@ class Record {
             consumePlatformWrapper.id,
             listOf()
         )
-        val mapper = jacksonObjectMapper()
+
+        val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
+        val valueAsString = mapper.writeValueAsString(consumeRecordProto)
+        println(valueAsString)
+        val postData = valueAsString.toRequestBody("application/json; charset=utf-8".toMediaType())
+
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("http://localhost:8080/consume/record/add")
-            .post(
-                mapper.writeValueAsString(consumeRecordProto)
-                    .toRequestBody("application/json; charset=utf-8".toMediaType())
-            )
+            .url("http://localhost:8080/repl/consume/record/add")
+            .post(postData)
             .build()
-        client.newCall(request).execute().use {
-
+        return client.newCall(request).execute().use {
+            val string = it.body?.string()
+            val resValue = mapper.readValue(string, Response::class.java)
+            when(resValue.status) {
+                200 -> {
+                    (resValue.data as? Map<*, *>)
+                }
+            }
+            ""
         }
-        return ""
     }
 
 
@@ -75,7 +84,7 @@ class Record {
                             (proto as? Map<*, *>)?.get("identifier") == identifier
                         }?.firstNotNullOfOrNull {
                             val map = it as Map<*, *>
-                            Wrapper(map["id"] as Long, map["identifier"] as String)
+                            Wrapper((map["id"] as Int).toLong(), map["identifier"] as String)
                         }
                 }
 
@@ -98,7 +107,7 @@ class Record {
                             (proto as? Map<*, *>)?.get("identifier") == identifier
                         }?.firstNotNullOfOrNull {
                             val map = it as Map<*, *>
-                            Wrapper(map["id"] as Long, map["identifier"] as String)
+                            Wrapper((map["id"] as Int).toLong(), map["identifier"] as String)
                         }
                 }
 
@@ -121,7 +130,7 @@ class Record {
                             (proto as? Map<*, *>)?.get("identifier") == identifier
                         }?.firstNotNullOfOrNull {
                             val map = it as Map<*, *>
-                            Wrapper(map["id"] as Long, map["identifier"] as String)
+                            Wrapper((map["id"] as Int).toLong(), map["identifier"] as String)
                         }
                 }
 
