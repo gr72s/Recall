@@ -66,8 +66,8 @@ class PayPlatformService(val repo: PayPlatformRepo) {
         return filtered
     }
 
-    fun getPayPlatform(): List<PayPlatform> {
-        return repo.findAll()
+    fun getPayPlatform(): List<PayPlatformProto> {
+        return repo.findAll().map { PayPlatformProto(it.id, it.identifier, it.label) }
     }
 
     @Throws(ServiceException::class)

@@ -66,8 +66,8 @@ class PayAccountService(val repo: PayAccountRepo) {
         return filtered
     }
 
-    fun getPayAccount(): List<PayAccount> {
-        return repo.findAll()
+    fun getPayAccount(): List<PayAccountProto> {
+        return repo.findAll().map { PayAccountProto(it.id, it.identifier, it.identifier, it.type, it.inUse) }
     }
 
     @Throws(ServiceException::class)

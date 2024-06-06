@@ -46,6 +46,7 @@ class PayAccount : AbstractEntity() {
     @get:Column(name = "ac_in_use")
     var inUse: Boolean = false
 
+    @get:Transient
     @get:OneToMany(
         mappedBy = "payAccount",
         cascade = [(CascadeType.PERSIST)],
@@ -64,6 +65,7 @@ class PayPlatform : AbstractEntity() {
     @get:Column(name = "pf_label")
     var label: String? = null
 
+    @get:Transient
     @get:OneToMany(
         mappedBy = "payPlatform",
         cascade = [CascadeType.PERSIST],
@@ -99,6 +101,7 @@ class ConsumePlatform : AbstractEntity() {
     @get:Column(name = "pf_label")
     var label: String? = null
 
+    @get:Transient
     @get:OneToMany(
         mappedBy = "consumePlatform",
         cascade = [CascadeType.PERSIST],
