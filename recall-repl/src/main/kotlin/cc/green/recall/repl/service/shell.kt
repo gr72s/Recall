@@ -47,7 +47,7 @@ class Display {
     companion object {
         const val TAG = "tag"
         const val TAG_URL = "/consume/tag"
-        const val PLATFORM = "platform"
+        const val PLATFORM = "consume-platform"
         const val PLATFORM_URL = "/consume/platform"
     }
 
