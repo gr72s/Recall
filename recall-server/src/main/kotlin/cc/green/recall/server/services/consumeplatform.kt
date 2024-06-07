@@ -15,7 +15,9 @@ data class ConsumePlatformProto(
     val id: Long?,
     val identifier: String?,
     val label: String?
-)
+) {
+    constructor() : this(null, null, null)
+}
 
 @RestController
 class ConsumePlatformController(val service: ConsumePlatformService) {

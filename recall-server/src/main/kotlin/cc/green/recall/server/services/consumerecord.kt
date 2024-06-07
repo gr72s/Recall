@@ -25,7 +25,9 @@ data class ConsumeRecordProto(
     val consumeDate: LocalDate?,
     val consumePlatformId: Long?,
     val tagIds: List<Long> = listOf()
-)
+) {
+    constructor() : this(null, null, 0.0.toBigDecimal(), null, null, null, listOf())
+}
 
 data class ConsumeRecordResProto(
     val id: Long?,

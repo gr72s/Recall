@@ -1,6 +1,7 @@
 package cc.green.recall.repl.service
 
 import cc.green.recall.server.Response
+import cc.green.recall.server.services.ConsumePlatformProto
 import cc.green.recall.server.services.ConsumeRecordProto
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -15,18 +16,49 @@ import java.math.BigDecimal
 import java.time.LocalDate
 
 @ShellComponent
-class Record {
+class Insert {
+
     @ShellMethod
-    fun insert(
+    fun insertConsumePlatform(
+        identifier: String,
+        @ShellOption(defaultValue = "") label: String
+    ): String? {
+        println(
+            """
+            identifier $identifier
+            label $label
+        """.trimIndent()
+        )
+        findConsumePlatform(identifier)?.let {
+            return "already exist $identifier"
+        } ?: println("$identifier not found")
+
+        val mapper = jacksonObjectMapper().registerModule(JavaTimeModule())
+        val reqBody = mapper
+            .writeValueAsString(ConsumePlatformProto(null, identifier, label))
+            .toRequestBody("application/json; charset=utf-8".toMediaType())
+
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url("http://localhost:8080/consume/platform/add")
+            .post(reqBody)
+            .build()
+        return client.newCall(request).execute().use { response ->
+            val resValue = mapper.readValue(response.body?.string(), Response::class.java)
+            val map = resValue.data as? Map<*, *> ?: return "response error"
+            "id=${map["id"]}, identifier=${map["identifier"]}, label=${map["label"]}"
+        }
+    }
+
+    @ShellMethod
+    fun insertRecord(
         sum: BigDecimal,
         consumePlatform: String,
         payPlatform: String,
         payAccount: String,
         @ShellOption consumeDate: String = LocalDate.now().toString()
     ): String? {
-
-
-        println("pre sum: ${sum}")
+        println("pre sum: $sum")
         val localDate = LocalDate.parse(consumeDate)
         println("pre consumeDate: $localDate")
 
@@ -60,12 +92,10 @@ class Record {
         return client.newCall(request).execute().use {
             val string = it.body?.string()
             val resValue = mapper.readValue(string, Response::class.java)
-            when(resValue.status) {
-                200 -> {
-                    (resValue.data as? Map<*, *>)
-                }
+            when (resValue.status) {
+                200 -> (resValue.data as? Map<*, *>).toString()
+                else -> "error"
             }
-            ""
         }
     }
 
