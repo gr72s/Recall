@@ -1,8 +1,11 @@
-import React from 'react';
+import React from "react";
+import FullFeaturedCrudGrid from "./FullFeaturedCrudGrid";
 
 function App() {
   return (
-    <div />
+    <div>
+      <FullFeaturedCrudGrid />
+    </div>
   );
 }
 
