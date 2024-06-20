@@ -2,14 +2,13 @@ package cc.green.recall.server.services
 
 import cc.green.recall.*
 import cc.green.recall.server.*
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 data class ConsumeTagProto(
     val id: Long?,
@@ -17,7 +16,9 @@ data class ConsumeTagProto(
     val label: String?,
     val superior: Long?,
     val superiorIdentifier: String? = null
-)
+) {
+    constructor() : this(null, null, null, null)
+}
 
 @RestController
 class ConsumeTagController(val service: ConsumeTagService) {
@@ -41,8 +42,16 @@ class ConsumeTagController(val service: ConsumeTagService) {
     }
 
     @GetMapping("/consume/tag")
-    fun getConsumeTag(): ResponseEntity<Response> {
-        return success(service.getConsumeTag())
+    fun getConsumeTag(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "10") size: Int
+    ): ResponseEntity<Response> {
+        var pageParam = page
+        if (pageParam < 1) pageParam = 1
+        var sizeParam = size
+        if (sizeParam < 0) sizeParam = 0
+        pageParam -= 1
+        return success(service.getConsumeTag(pageParam, sizeParam))
     }
 
 }
@@ -50,16 +59,18 @@ class ConsumeTagController(val service: ConsumeTagService) {
 @Service
 class ConsumeTagService(val repo: ConsumeTagRepo) {
 
-    fun newConsumeTag(proto: ConsumeTagProto): ConsumeTag {
+    fun newConsumeTag(proto: ConsumeTagProto): ConsumeTagProto {
         if (repo.existsByIdentifier(proto.identifier!!)) {
             throw AlreadyExistsEntityException(proto.identifier, ConsumeTag::class)
         }
-        return updateOrCreateConsumeTag(proto, null)
+        updateOrCreateConsumeTag(proto, null)
+        return proto
     }
 
-    fun updateConsumeTag(proto: ConsumeTagProto): ConsumeTag {
+    fun updateConsumeTag(proto: ConsumeTagProto): ConsumeTagProto {
         val found = repo.findByIdOrThrow(proto.id!!)
-        return updateOrCreateConsumeTag(proto, found)
+        updateOrCreateConsumeTag(proto, found)
+        return proto
     }
 
     fun delConsumeTag(protos: List<ConsumeTagProto>): List<ConsumeTagProto> {
@@ -68,19 +79,26 @@ class ConsumeTagService(val repo: ConsumeTagRepo) {
         return filtered
     }
 
-    fun getConsumeTag(): List<ConsumeTagProto> {
-        val tags = repo.findAll()
+    fun getConsumeTag(page: Int, size: Int): Pages<ConsumeTagProto> {
+        val tags = repo.findAll(PageRequest.of(page, size, Sort.by("id")))
         val associateBy = tags.associateBy { it.id }
-        return tags.map {
-            ConsumeTagProto(it.id, it.identifier, it.label, it.superior, associateBy[it.superior]?.identifier)
+        val protos = tags.map {
+            ConsumeTagProto(
+                it.id,
+                it.identifier,
+                it.label,
+                it.superior,
+                associateBy[it.superior]?.identifier
+            )
         }.toList()
+        return Pages(tags, protos)
     }
 
     @Throws(ServiceException::class)
     private fun updateOrCreateConsumeTag(proto: ConsumeTagProto, tag: ConsumeTag?): ConsumeTag {
         val obj = (tag ?: ConsumeTag()).apply {
             identifier = proto.identifier
-            label = proto.label ?: proto.identifier
+            label = proto.label
             superior = proto.superior
         }
         return repo.save(obj)

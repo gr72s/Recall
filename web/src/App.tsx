@@ -1,10 +1,10 @@
 import React from "react";
-import FullFeaturedCrudGrid from "./FullFeaturedCrudGrid";
+import Table from "./Table";
 
 function App() {
   return (
     <div>
-      <FullFeaturedCrudGrid />
+      <Table />
     </div>
   );
 }

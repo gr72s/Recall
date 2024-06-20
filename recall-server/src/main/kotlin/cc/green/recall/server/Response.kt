@@ -13,8 +13,8 @@ class Response(val status: Int, val msg: String, val data: Any?, val error: Any?
             return Response(e.statusCode, ERROR, null, ExceptionWrapper(e.reason, e.message))
         }
 
-        fun unknownError(): Response {
-            return Response(4000, ERROR, null, ExceptionWrapper("unknownError", "unknown error"))
+        fun unknownError(e: Exception): Response {
+            return Response(4000, ERROR, null, ExceptionWrapper(e.stackTraceToString(), e.localizedMessage))
         }
 
         const val SUCCESS = "success"

@@ -104,12 +104,6 @@ export default function FullFeaturedCrudGrid() {
     {},
   );
 
-  const [rowDatas, setRowDatas] = React.useState(initialRows);
-
-  React.useEffect(() => {
-    let ignore = false;
-  }, []);
-
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
     params,
     event,
@@ -150,6 +144,14 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+    console.log("handleRowModesModelChange");
+    for (let key in newRowModesModel) {
+      console.log(`Key: ${key}`);
+      let newRowModesModelElement = newRowModesModel[key];
+      Object.entries(newRowModesModelElement).forEach(([key, value]) => {
+        console.log(`    Key: ${key}, Value: ${value}`);
+      });
+    }
     setRowModesModel(newRowModesModel);
   };
 

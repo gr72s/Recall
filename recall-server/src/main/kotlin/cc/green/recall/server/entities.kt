@@ -88,7 +88,7 @@ class ConsumeTag : AbstractEntity() {
     var superior: Long? = null
 
     @get:Transient
-    @get:ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    @get:ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
     var records = mutableSetOf<ConsumeRecord>()
 }
 

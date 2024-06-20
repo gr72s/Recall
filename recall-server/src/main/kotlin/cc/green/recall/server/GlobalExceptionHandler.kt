@@ -12,9 +12,10 @@ class GlobalExceptionHandler {
     @ExceptionHandler(Exception::class)
     @ResponseBody
     fun handleException(e: Exception): ResponseEntity<Response> {
+        e.printStackTrace()
         return when (e) {
             is ServiceException -> ResponseEntity.ok(Response.error(e))
-            else -> ResponseEntity.ok(Response.unknownError())
+            else -> ResponseEntity.ok(Response.unknownError(e))
         }
     }
 
