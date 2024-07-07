@@ -88,7 +88,13 @@ class ConsumeTag : AbstractEntity() {
     var superior: Long? = null
 
     @get:Transient
-    @get:ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE])
+    @get:ManyToMany(fetch = FetchType.LAZY, cascade = [(CascadeType.REMOVE)])
+    @get:JoinTable(
+        name = "cs_record_tags",
+        joinColumns = [(JoinColumn(name = "tag_id"))],
+        inverseJoinColumns = [(JoinColumn(name = "record_id"))],
+        foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT)
+    )
     var records = mutableSetOf<ConsumeRecord>()
 }
 
